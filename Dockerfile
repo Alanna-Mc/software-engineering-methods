@@ -1,4 +1,4 @@
-FROM openjdk:18
+FROM openjdk:latest
 
 # Copy the compiled classes into the Docker image
 COPY ./target/classes/com /tmp/com
