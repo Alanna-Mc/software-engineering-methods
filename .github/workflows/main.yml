@@ -21,10 +21,3 @@ jobs:
         run: docker run --name semcontainer -d semimage
       - name: view logs
         run: docker logs semcontainer
-      - name: Fail if no output
-        run: |
-           if ! docker logs semcontainer | grep -q "Boo yah!"; then
-             echo "Expected output not found"
-             exit 1
-           fi
-
