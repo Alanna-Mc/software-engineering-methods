@@ -16,5 +16,12 @@ In this lab, we set up the development environment using the following tools:
 ## Lab 02: Setting Up a Continuous Integration Workflow
 In this lab, we established a Continuous Integration (CI) workflow using GitHub Actions to automate the build and testing of our application.
 
-## GitHub Workflow Status
-![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/Alanna-Mc/software-engineering-methods/main.yml?branch=main)
+### GitHub Workflow Status
+![GitHub Workflow Status (main)](https://img.shields.io/github/actions/workflow/status/Alanna-Mc/software-engineering-methods/main.yml?branch=main)
+
+### License Status
+[![LICENSE](https://img.shields.io/github/license/Alanna-Mc/software-engineering-methods.svg?style=flat-square)](https://github.com/Alanna-Mc/software-engineering-methods/blob/main/LICENSE)
+
+### Release Status
+[![Releases](https://img.shields.io/github/release/Alanna-Mc/software-engineering-methods/all.svg?style=flat-square)](https://github.com/Alanna-Mc/software-engineering-methods/releases)
+
