@@ -1,10 +1,13 @@
+# Use the OpenJDK base image
 FROM openjdk:latest
 
-# Copy the compiled classes into the Docker image
-COPY ./target/classes/com /tmp/com
+# Copy the compiled JAR with dependencies into the Docker image
+COPY ./target/seMethods-1.0-SNAPSHOT-jar-with-dependencies.jar /tmp
 
-# Set the working directoy
+# Set the working directory
 WORKDIR /tmp
 
-# Run the application
-ENTRYPOINT ["java", "com.napier.sem.App"]
+# Command to run the JAR file
+ENTRYPOINT ["java", "-jar", "seMethods-1.0-SNAPSHOT-jar-with-dependencies.jar"]
+
+
