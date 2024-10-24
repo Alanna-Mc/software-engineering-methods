@@ -22,7 +22,7 @@ public class App
             System.exit(-1);
         }
 
-        int retries = 10;  // Adjust the retries to a smaller number
+        int retries = 20;  // Adjust the retries to a smaller number
         for (int i = 0; i < retries; ++i)
         {
             System.out.println("Connecting to database...");
