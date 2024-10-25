@@ -184,6 +184,51 @@ public class App
         }
     }
 
+    /**
+     * Gets all the current employees and salaries by selected role.
+     * @param role The role (title) to filter salaries by.
+     * @return A list of all employees and salaries by role, or null if there is an error.
+     */
+    public ArrayList<Employee> getAllSalariesByRole(String role)
+    {
+        try
+        {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary " +
+                            "FROM employees, salaries, titles " +
+                            "WHERE employees.emp_no = salaries.emp_no " +
+                            "AND employees.emp_no = titles.emp_no " +
+                            "AND salaries.to_date = '9999-01-01' " +
+                            "AND titles.to_date = '9999-01-01' " +
+                            "AND titles.title = '" + role + "' " +
+                            "ORDER BY employees.emp_no ASC";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Extract employee information
+            ArrayList<Employee> employees = new ArrayList<Employee>();
+            while (rset.next())
+            {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("employees.emp_no");
+                emp.first_name = rset.getString("employees.first_name");
+                emp.last_name = rset.getString("employees.last_name");
+                emp.salary = rset.getInt("salaries.salary");
+                employees.add(emp);
+            }
+            return employees;
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get salary details");
+            return null;
+        }
+    }
+
     public static void main(String[] args)
     {
         // Create new Application
@@ -193,10 +238,16 @@ public class App
         a.connect();
 
         // Extract employee salary information
-        ArrayList<Employee> employees = a.getAllSalaries();
+        //ArrayList<Employee> employees = a.getAllSalaries();
 
         // Print the salaries of all employees
-        a.printSalaries(employees);
+        // a.printSalaries(employees);
+
+        // Extract employee salary information by role
+        ArrayList<Employee> engineers = a.getAllSalariesByRole("Engineer");
+
+        // Print the salaries of all engineers
+        a.printSalaries(engineers);
 
         // Disconnect from database
         a.disconnect();
