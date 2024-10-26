@@ -72,19 +72,17 @@ public class App
             Statement stmt = con.createStatement();
             // Create string for SQL statement
             String strSelect =
-                    "SELECT employees.emp_no, employees.first_name, employees.last_name,\n" +
-                            "titles.title,\n" +
-                            "salaries.salary,\n" +
-                            "departments.dept_name,\n" +
-                            "managers.first_name AS manager_first_name, managers.last_name AS manager_last_name "
-                            + "FROM employees " +
-                    "JOIN titles ON employees.emp_no = titles.emp_no " +
-                    "JOIN salaries ON employees.emp_no = salaries.emp_no " +
-                    "JOIN dept_emp ON employees.emp_no = dept_emp.emp_no " +
-                    "JOIN departments ON dept_emp.dept_no = departments.dept_no " +
-                    "JOIN dept_manager ON departments.dept_no = dept_manager.dept_no " +
-                    "JOIN employees AS managers ON dept_manager.emp_no = managers.emp_no "
-                            + "WHERE employees.emp_no = " + ID;
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, " +
+                            "departments.dept_name, " +
+                            "managers.emp_no AS manager_emp_no, managers.first_name AS manager_first_name, " +
+                            "managers.last_name AS manager_last_name " +
+                            "FROM employees " +
+                            "JOIN dept_emp ON employees.emp_no = dept_emp.emp_no " +
+                            "JOIN departments ON dept_emp.dept_no = departments.dept_no " +
+                            "JOIN dept_manager ON departments.dept_no = dept_manager.dept_no " +
+                            "JOIN employees AS managers ON dept_manager.emp_no = managers.emp_no " +
+                            "WHERE employees.emp_no = " + ID;
+
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
             // Return new employee if valid.
@@ -98,19 +96,19 @@ public class App
                 emp.title = rset.getString("title");
                 emp.salary = rset.getInt("salary");
 
-                // Create a new Department object and set its fields
+                // Create and set the department
                 Department dept = new Department();
                 dept.dept_name = rset.getString("dept_name");
 
-                // Assign the Department object to the employee's dept field
-                emp.dept = dept;
-
-                // Create a new Employee object for the manager
+                // Create and assign the department manager
                 Employee manager = new Employee();
+                manager.emp_no = rset.getInt("manager_emp_no");
                 manager.first_name = rset.getString("manager_first_name");
                 manager.last_name = rset.getString("manager_last_name");
 
-                // Assign the manager object to the employee
+                // Assign the department and manager to the employee
+                dept.manager = manager;
+                emp.dept = dept;
                 emp.manager = manager;
 
                 return emp;
