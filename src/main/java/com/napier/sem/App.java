@@ -144,8 +144,15 @@ public class App
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
-            // SQL query to get the department based on the department name
-            String strSelect = "SELECT dept_no, dept_name FROM departments WHERE dept_name = '" + dept_name + "'";
+            // Create SQL query to fetch department and its manager
+            String strSelect =
+                    "SELECT departments.dept_no, departments.dept_name, " +
+                            "managers.emp_no AS manager_emp_no, managers.first_name AS manager_first_name, " +
+                            "managers.last_name AS manager_last_name " +
+                            "FROM departments " +
+                            "JOIN dept_manager ON departments.dept_no = dept_manager.dept_no " +
+                            "JOIN employees AS managers ON dept_manager.emp_no = managers.emp_no " +
+                            "WHERE departments.dept_name = '" + dept_name + "'";
 
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
@@ -156,6 +163,15 @@ public class App
                 Department dept = new Department();
                 dept.dept_no = rset.getString("dept_no");
                 dept.dept_name = rset.getString("dept_name");
+
+                // Create the manager as an Employee object
+                Employee manager = new Employee();
+                manager.emp_no = rset.getInt("manager_emp_no");
+                manager.first_name = rset.getString("manager_first_name");
+                manager.last_name = rset.getString("manager_last_name");
+
+                // Assign the manager to the department
+                dept.manager = manager;
 
                 // Return the populated Department object
                 return dept;
