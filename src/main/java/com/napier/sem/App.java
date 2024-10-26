@@ -321,6 +321,58 @@ public class App
         }
     }
 
+    public Employee getEmployeeByName(String firstName, String lastName) {
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create SQL query to fetch an employee by their first and last name
+            String strSelect =
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, " +
+                            "departments.dept_name, " +
+                            "managers.emp_no AS manager_emp_no, managers.first_name AS manager_first_name, " +
+                            "managers.last_name AS manager_last_name " +
+                            "FROM employees " +
+                            "JOIN dept_emp ON employees.emp_no = dept_emp.emp_no " +
+                            "JOIN departments ON dept_emp.dept_no = departments.dept_no " +
+                            "JOIN dept_manager ON departments.dept_no = dept_manager.dept_no " +
+                            "JOIN employees AS managers ON dept_manager.emp_no = managers.emp_no " +
+                            "WHERE employees.first_name = '" + firstName + "' AND employees.last_name = '" + lastName + "'";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            // Check if an employee was found
+            if (rset.next()) {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("emp_no");
+                emp.first_name = rset.getString("first_name");
+                emp.last_name = rset.getString("last_name");
+
+                // Create and set the department
+                Department dept = new Department();
+                dept.dept_name = rset.getString("dept_name");
+
+                // Create and assign the department manager
+                Employee manager = new Employee();
+                manager.emp_no = rset.getInt("manager_emp_no");
+                manager.first_name = rset.getString("manager_first_name");
+                manager.last_name = rset.getString("manager_last_name");
+
+                dept.manager = manager;
+                emp.dept = dept;
+
+                return emp;
+            } else {
+                return null;  // Employee not found
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get employee details by name");
+            return null;
+        }
+    }
+
+
     public static void main(String[] args)
     {
         // Create new Application
