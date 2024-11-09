@@ -9,7 +9,7 @@ public class App
     private Connection con = null;
 
     // Connect to the MySQL database
-    public void connect()
+    public void connect(String location, int delay)
     {
         try
         {
@@ -23,22 +23,29 @@ public class App
         }
 
         int retries = 20;  // Adjust the retries to a smaller number
+        boolean shouldWait = false;
         for (int i = 0; i < retries; ++i)
         {
             System.out.println("Connecting to database...");
-            try
-            {
-                // Wait a bit for the database to start
-                Thread.sleep(3000); // Adjust to a smaller wait time for faster retries
-                // Connect to the database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/employees?useSSL=false", "root", "example");
-                System.out.println("Successfully connected");
-                break;  // Exit the loop once connected
+            try {
+                if (shouldWait){
+                    // Wait a bit for the database to start
+                    Thread.sleep(3000); // Adjust to a smaller wait time for faster retries
+                }
+                    // Connect to the database
+                    con = DriverManager.getConnection("jdbc:mysql://" + location
+                            + "/employees?allowPublicKeyRetrieval=true&useSSL=false",
+                            "root", "example");
+                    System.out.println("Successfully connected");
+                    break;  // Exit the loop once connected
             }
             catch (SQLException sqle)
             {
                 System.out.println("Failed to connect to database attempt " + (i + 1));
                 System.out.println(sqle.getMessage());
+
+                // Wait before attempting to reconnect
+                shouldWait = true;
             }
             catch (InterruptedException ie)
             {
@@ -383,23 +390,26 @@ public class App
 
     public static void main(String[] args)
     {
-        // Create new Application
+        // Create new Application and connect to database
         App a = new App();
 
-        // Connect to database
-        a.connect();
+        if (args.length < 1) {
+            a.connect("localhost:33060", 10000);
+        } else {
+            a.connect(args[0], Integer.parseInt(args[1]));
+        }
 
         // Extract employee salary information
-        //ArrayList<Employee> employees = a.getAllSalaries();
+        ArrayList<Employee> employees = a.getAllSalaries();
 
         // Print the salaries of all employees
-        // a.printSalaries(employees);
+         a.printSalaries(employees);
 
         // Extract employee salary information by role
-        //ArrayList<Employee> engineers = a.getAllSalariesByRole("Engineer");
+        ArrayList<Employee> engineers = a.getAllSalariesByRole("Engineer");
 
         // Print the salaries of all engineers
-        //a.printSalaries(engineers);
+        a.printSalaries(engineers);
 
         // Get the department information (example: "Sales")
         Department salesDept = a.getDepartment("Sales");
