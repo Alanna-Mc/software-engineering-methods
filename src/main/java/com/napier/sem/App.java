@@ -79,7 +79,7 @@ public class App
             Statement stmt = con.createStatement();
             // Create string for SQL statement
             String strSelect =
-                    "SELECT employees.emp_no, employees.first_name, employees.last_name, " +
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name," +
                             "departments.dept_name, " +
                             "managers.emp_no AS manager_emp_no, managers.first_name AS manager_first_name, " +
                             "managers.last_name AS manager_last_name " +
@@ -100,8 +100,8 @@ public class App
                 emp.emp_no = rset.getInt("emp_no");
                 emp.first_name = rset.getString("first_name");
                 emp.last_name = rset.getString("last_name");
-                emp.title = rset.getString("title");
-                emp.salary = rset.getInt("salary");
+                //emp.title = rset.getString("title");
+                //emp.salary = rset.getInt("salary");
 
                 // Create and set the department
                 Department dept = new Department();
@@ -403,13 +403,13 @@ public class App
         ArrayList<Employee> employees = a.getAllSalaries();
 
         // Print the salaries of all employees
-         a.printSalaries(employees);
+        // a.printSalaries(employees);
 
         // Extract employee salary information by role
         ArrayList<Employee> engineers = a.getAllSalariesByRole("Engineer");
 
         // Print the salaries of all engineers
-        a.printSalaries(engineers);
+        // a.printSalaries(engineers);
 
         // Get the department information (example: "Sales")
         Department salesDept = a.getDepartment("Sales");
