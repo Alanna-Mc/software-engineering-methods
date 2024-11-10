@@ -27,3 +27,6 @@ In this lab, we established a Continuous Integration (CI) workflow using GitHub 
 
 ### Develop Build Status
 ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/Alanna-Mc/software-engineering-methods/main.yml?branch=develop)
+
+### CodeCov
+[![codecov](https://codecov.io/gh/Alanna-Mc/software-engineering-methods/graph/badge.svg?token=E81VTOLPNH)](https://codecov.io/gh/Alanna-Mc/software-engineering-methods)
