@@ -71,31 +71,29 @@ public class App
         }
     }
 
-    public Employee getEmployee(int ID)
-    {
-        try
-        {
+    public Employee getEmployee(int ID) {
+        try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Create string for SQL statement
+            // Use LEFT JOINs to handle cases where there might not be a related department or manager
             String strSelect =
-                    "SELECT employees.emp_no, employees.first_name, employees.last_name," +
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, " +
                             "departments.dept_name, " +
                             "managers.emp_no AS manager_emp_no, managers.first_name AS manager_first_name, " +
                             "managers.last_name AS manager_last_name " +
                             "FROM employees " +
-                            "JOIN dept_emp ON employees.emp_no = dept_emp.emp_no " +
-                            "JOIN departments ON dept_emp.dept_no = departments.dept_no " +
-                            "JOIN dept_manager ON departments.dept_no = dept_manager.dept_no " +
-                            "JOIN employees AS managers ON dept_manager.emp_no = managers.emp_no " +
+                            "LEFT JOIN dept_emp ON employees.emp_no = dept_emp.emp_no " +
+                            "LEFT JOIN departments ON dept_emp.dept_no = departments.dept_no " +
+                            "LEFT JOIN dept_manager ON departments.dept_no = dept_manager.dept_no " +
+                            "LEFT JOIN employees AS managers ON dept_manager.emp_no = managers.emp_no " +
                             "WHERE employees.emp_no = " + ID;
 
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
-            // Return new employee if valid.
-            // Check one is returned
-            if (rset.next())
-            {
+
+            // Check if an employee is found
+            if (rset.next()) {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("emp_no");
                 emp.first_name = rset.getString("first_name");
@@ -103,28 +101,29 @@ public class App
                 //emp.title = rset.getString("title");
                 //emp.salary = rset.getInt("salary");
 
-                // Create and set the department
-                Department dept = new Department();
-                dept.dept_name = rset.getString("dept_name");
+                // Handle department (nullable)
+                String deptName = rset.getString("dept_name");
+                if (deptName != null) {
+                    Department dept = new Department();
+                    dept.dept_name = deptName;
+                    emp.dept = dept;
 
-                // Create and assign the department manager
-                Employee manager = new Employee();
-                manager.emp_no = rset.getInt("manager_emp_no");
-                manager.first_name = rset.getString("manager_first_name");
-                manager.last_name = rset.getString("manager_last_name");
-
-                // Assign the department and manager to the employee
-                dept.manager = manager;
-                emp.dept = dept;
-                emp.manager = manager;
-
+                    // Handle manager (nullable)
+                    int managerEmpNo = rset.getInt("manager_emp_no");
+                    if (!rset.wasNull()) {
+                        Employee manager = new Employee();
+                        manager.emp_no = managerEmpNo;
+                        manager.first_name = rset.getString("manager_first_name");
+                        manager.last_name = rset.getString("manager_last_name");
+                        dept.manager = manager;
+                        emp.manager = manager;
+                    }
+                }
                 return emp;
-            }
-            else
+            } else {
                 return null;
-        }
-        catch (Exception e)
-        {
+            }
+        }catch (Exception e){
             System.out.println(e.getMessage());
             System.out.println("Failed to get employee details");
             return null;
@@ -387,6 +386,25 @@ public class App
         }
     }
 
+    // Add employee method
+    public void addEmployee(Employee emp)
+    {
+        try
+        {
+            Statement stmt = con.createStatement();
+            String strUpdate =
+                    "INSERT INTO employees (emp_no, first_name, last_name, birth_date, gender, hire_date) " +
+                            "VALUES (" + emp.emp_no + ", '" + emp.first_name + "', '" + emp.last_name + "', " +
+                            "'9999-01-01', 'M', '9999-01-01')";
+            stmt.execute(strUpdate);
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to add employee");
+        }
+    }
+
 
     public static void main(String[] args)
     {
@@ -400,25 +418,25 @@ public class App
         }
 
         // Extract employee salary information
-        ArrayList<Employee> employees = a.getAllSalaries();
+        // ArrayList<Employee> employees = a.getAllSalaries();
 
         // Print the salaries of all employees
         // a.printSalaries(employees);
 
         // Extract employee salary information by role
-        ArrayList<Employee> engineers = a.getAllSalariesByRole("Engineer");
+       // ArrayList<Employee> engineers = a.getAllSalariesByRole("Engineer");
 
         // Print the salaries of all engineers
         // a.printSalaries(engineers);
 
         // Get the department information (example: "Sales")
-        Department salesDept = a.getDepartment("Sales");
+       // Department salesDept = a.getDepartment("Sales");
 
         // Get the salaries for the "Sales" department
-        ArrayList<Employee> salesEmployees = a.getSalariesByDepartment(salesDept);
+        // ArrayList<Employee> salesEmployees = a.getSalariesByDepartment(salesDept);
 
         // Print the salaries of employees in the "Sales" department
-        a.printSalaries(salesEmployees);
+        //a.printSalaries(salesEmployees);
 
         // Disconnect from database
         a.disconnect();

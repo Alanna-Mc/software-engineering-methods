@@ -39,4 +39,19 @@ public class Employee
      * Employee's manager
      */
     public Employee manager;
+
+    /**
+     * Employee's birth date
+     */
+    public String birth_date; // Use String for simplicity, or Date if you handle date parsing
+
+    /**
+     * Employee's gender
+     */
+    public String gender; // Typically 'M' or 'F'
+
+    /**
+     * Employee's hire date
+     */
+    public String hire_date;
 }
