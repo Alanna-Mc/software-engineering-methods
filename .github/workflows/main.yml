@@ -49,7 +49,7 @@ jobs:
           directory: ./target/site/jacoco
           flags: Integration Tests # optional
           verbose: true # optional (default = false)
-          slug: Alanna-Mc>/software-engineering-methods
+          slug: Alanna-Mc/software-engineering-methods
 
   build:
     name: Build and Start Using docker compose
