@@ -1,5 +1,6 @@
 package com.napier.sem;
 
+import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -205,6 +206,7 @@ public class App
                     "AND departments.dept_no = '" + dept.dept_no + "' " +
                     "ORDER BY employees.emp_no ASC";
 
+
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
             // Extract employee information
@@ -405,6 +407,43 @@ public class App
         }
     }
 
+    /**
+     * Outputs employee data to a Markdown file.
+     *
+     * @param employees List of employees to output.
+     * @param filename Name of the Markdown file to create.
+     */
+    public void outputEmployees(ArrayList<Employee> employees, String filename) {
+        if (employees == null) {
+            System.out.println("No employees to output.");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        // Markdown header
+        sb.append("| Emp No | First Name | Last Name | Salary |\r\n");
+        sb.append("| --- | --- | --- | --- |\r\n");
+
+        // Loop through employees and add rows
+        for (Employee emp : employees) {
+            sb.append("| ").append(emp.emp_no).append(" | ")
+                    .append(emp.first_name).append(" | ")
+                    .append(emp.last_name).append(" | ")
+                    .append(emp.salary).append(" |\r\n");
+        }
+
+        // Write to file
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter("./reports/" + filename));
+            writer.write(sb.toString());
+            writer.close();
+            System.out.println("Markdown file created: " + filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void main(String[] args)
     {
@@ -424,7 +463,9 @@ public class App
         // a.printSalaries(employees);
 
         // Extract employee salary information by role
-       // ArrayList<Employee> engineers = a.getAllSalariesByRole("Engineer");
+        ArrayList<Employee> employees = a.getAllSalariesByRole("Manager");
+        // MarkDown
+        a.outputEmployees(employees, "ManagerSalaries.md");
 
         // Print the salaries of all engineers
         // a.printSalaries(engineers);
