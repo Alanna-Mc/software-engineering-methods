@@ -2,10 +2,8 @@ name: A workflow for my Hello World App
 on:
   push:
     branches:
-     - master
+     - main
      - develop
-permissions:
-  contents: write
 jobs:
   UnitTests:
     name: Unit Tests
